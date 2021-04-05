@@ -1,0 +1,26 @@
+#ifndef LINE_EDITION_H
+# define LINE_EDITION_H
+# define PROMPT "prompt"
+# define PROMPT_SIZE 6
+
+	typedef struct 		s_line
+	{
+		unsigned int 	cursor;
+		unsigned int	cursor_max;
+		char			*str;
+		int				(*cursor_advance)(struct s_line*, unsigned int);
+		int				(*cursor_back)(struct s_line*, unsigned int);
+		int				(*cursor_delete)(struct s_line*);
+		struct s_line 	*(*write)(struct s_line*, char *);
+		struct s_line	*(*reset)(struct s_line*);
+		unsigned int	err;
+	}					t_line;
+
+	int line_advance_cursor(t_line *, unsigned int);
+	int line_back_cursor(t_line *, unsigned int);
+	int line_delete_cursor(t_line *);
+	t_line *line_reset(t_line *);
+	t_line *line_write(t_line *, char *str);
+	t_line *new_line(void);
+
+#endif
