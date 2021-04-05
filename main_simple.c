@@ -10,18 +10,13 @@
 #include <term.h>
 #include "utils.h"
 #include "kt_functions.h"
+#include "line_edition.h"
 
 #ifdef unix
 static char term_buffer[2048];
 #else
 #define term_buffer 0
 #endif
-
-char PC;   /* For tputs.  */
-char *BC;  /* For tgoto.  */
-char *UP;
-char *CL;
-char *CM;
 
 void ft_fatal(const char *str, const char *str2)
 {
@@ -61,13 +56,7 @@ int main()
 	if (termtype == 0)
 		ft_fatal("Specify a terminal type with `setenv TERM <yourtype>'.\n", 0);
 
-	char *temp;
-	temp = tgetstr ("pc", 0);
-  	PC = temp ? *temp : 0;
-	BC = tgetstr ("le", 0);
-	UP = tgetstr ("up", 0);
-	CL = tgetstr("cl", 0);
-	CM = tgetstr("cm", 0);
+	tgetent(NULL, termtype); //importante al parecer, >>>AVERIGUAR<<<
 
 	int (*functptr[8])(char*, int); //array de funciones que llamar al tratar cada tipo de char
 	//Hay tantas como tipos de key hay
@@ -78,9 +67,12 @@ int main()
 	//t_history h;
 	key.line = ft_strdup("");
 	key.cursor = 0;
+	key.l = new_line();
 
 	//h = hs_init();
 	write(0, "prompt", 6);
+
+	
 
 	while(1)
 	{
@@ -93,7 +85,7 @@ int main()
 	}
 	write(0, "\nexiting...\n", 12);
 	write(0, "last line: ", 11);
-	ft_putstr_fd(0, key.line);
+	ft_putstr_fd(0, key.l->str);
 	write(0, "\n", 1);
 
 	struct termios	tattr;
