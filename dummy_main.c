@@ -20,6 +20,12 @@ int hook(void* data, char*ln)
 
 int main(void)
 {
+	/*
+	*	int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *))
+	*	void *data will be passed to hook
+	*	prompt to be printed after each \n
+	*	hook function
+	*/
 	const char* data = "data1234";
 	line_edition_loop((void*)data, "prompt", hook);
 }
