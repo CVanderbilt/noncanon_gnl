@@ -25,18 +25,17 @@ void ft_fatal(const char *str, const char *str2)
 	exit(1);
 }
 
-//int tgetnum (char *name);
-//int tgetflag (char *name);
-//char *tgetstr (char *name, char **area);
-
-void ft_putchar(char c)
+void set_term_basic(void)
 {
-	write(0, &c, 1);
+	struct termios	tattr;
+
+	tcgetattr(STDIN_FILENO, &tattr);
+	tattr.c_lflag |= (ECHO | ICANON);
+	tattr.c_oflag |= (OPOST);
+	tcsetattr(STDIN_FILENO, TCSADRAIN, &tattr);
 }
 
-
-
-int main()
+void set_term_specific(void)
 {
 	struct termios tty;
 
@@ -57,6 +56,22 @@ int main()
 		ft_fatal("Specify a terminal type with `setenv TERM <yourtype>'.\n", 0);
 
 	tgetent(NULL, termtype); //importante al parecer, >>>AVERIGUAR<<<
+}
+
+//int tgetnum (char *name);
+//int tgetflag (char *name);
+//char *tgetstr (char *name, char **area);
+
+void ft_putchar(char c)
+{
+	write(0, &c, 1);
+}
+
+
+
+int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *))
+{
+	set_term_specific();
 
 	int (*functptr[8])(char*, int); //array de funciones que llamar al tratar cada tipo de char
 	//Hay tantas como tipos de key hay
@@ -64,13 +79,14 @@ int main()
 
 	char buff[4];
 	t_key key;
-	//t_history h;
+
 	key.line = ft_strdup("");
 	key.cursor = 0;
 	key.l = new_line();
-
-	//h = hs_init();
-	write(0, "prompt", 6);
+	key.data = data;
+	key.prompt = prompt;
+	key.prompt_len = ft_strlen(prompt);
+	key.hook = hook;
 
 	
 
@@ -88,11 +104,6 @@ int main()
 	ft_putstr_fd(0, key.l->str);
 	write(0, "\n", 1);
 
-	struct termios	tattr;
-
-	tcgetattr(STDIN_FILENO, &tattr);
-	tattr.c_lflag |= (ECHO | ICANON);
-	tattr.c_oflag |= (OPOST);
-	tcsetattr(STDIN_FILENO, TCSADRAIN, &tattr);
+	set_term_basic();
 	return (0);
 }

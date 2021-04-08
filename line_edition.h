@@ -16,6 +16,11 @@
 		unsigned int	err;
 	}					t_line;
 
+	//public
+	int line_edition_loop(void *, const char *str, int (*hook)(void *, char *));
+	//internal
+	void set_term_basic(void);
+	void set_term_specific(void);
 	int line_advance_cursor(t_line *, unsigned int);
 	int line_back_cursor(t_line *, unsigned int);
 	int line_delete_cursor(t_line *);

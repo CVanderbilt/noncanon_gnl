@@ -134,14 +134,18 @@ void ft_save(const char *str)
 int kf_eol(t_key *k)
 {
 	int i;
-	
+	char *tmp;
 	i = -1;
 	ft_save(k->l->str);
 	write(0, "\n", 1);
-	while(++i < k->l->cursor + PROMPT_SIZE)
-		tputs(tgetstr("le", NULL), 1, &ft_putchar0);
-	ft_putstr_fd(0, PROMPT);
+	tputs(tgetstr("cr", 0), 1, &ft_putchar0);
+	tmp = ft_strdup(k->l->str);
 	k->l->reset(k->l);
+	set_term_basic();
+	k->hook(k->data, tmp);
+	
+	set_term_specific();
+	write(0, k->prompt, k->prompt_len);
 	return (1);
 }
 
