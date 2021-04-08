@@ -25,6 +25,11 @@ typedef struct 	s_key
 	char		*line;
 	unsigned	cursor;
 	t_line		*l;
+	//estas inicializaciones se harán a través de line_edition_main
+	int		 	(*hook)(void *data, char *line); 	//hook function to call at eol find
+	void		*data;								//data to be passed to hook function (unchanged)
+	const char 	*prompt;							//prompt to be printed after each eol
+	unsigned	prompt_len; 
 }				t_key;
 
 void set_key_type(t_key *key);
