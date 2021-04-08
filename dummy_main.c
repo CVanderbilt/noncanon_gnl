@@ -13,6 +13,8 @@ int hook(void* data, char*ln)
 	for (int i = 0; ln[i]; i++)
 		write(1, ln + i, 1);
 	write(1, "\n", 1);
+	if (ln[0] == 'q')
+		return (0);
 	return (1);
 }
 

@@ -94,10 +94,9 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	{
 		key.type = KT_UNRECOGNIZED;
 		get_key(&key);
-		ft_manage_key(&key);
-		//ft_refresh(key.line);
-		if (key.key[0] == 'q')
+		if (!ft_manage_key(&key))
 			break ;
+		//ft_refresh(key.line);
 	}
 	write(0, "\nexiting...\n", 12);
 	write(0, "last line: ", 11);

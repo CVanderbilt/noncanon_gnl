@@ -134,6 +134,7 @@ void ft_save(const char *str)
 int kf_eol(t_key *k)
 {
 	int i;
+	int ret;
 	char *tmp;
 	i = -1;
 	ft_save(k->l->str);
@@ -142,11 +143,11 @@ int kf_eol(t_key *k)
 	tmp = ft_strdup(k->l->str);
 	k->l->reset(k->l);
 	set_term_basic();
-	k->hook(k->data, tmp);
+	ret = k->hook(k->data, tmp);
 	
 	set_term_specific();
 	write(0, k->prompt, k->prompt_len);
-	return (1);
+	return (ret);
 }
 
 int ft_manage_key(t_key *key)
