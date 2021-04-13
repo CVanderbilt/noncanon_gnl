@@ -126,7 +126,7 @@ int kf_del(t_key *k)
 	k->l->cursor_delete(k->l);
 	return (1);
 }
-void ft_save(const char *str)
+void ft_save(char *str)
 {
 
 }

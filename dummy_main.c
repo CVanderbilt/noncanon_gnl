@@ -1,10 +1,14 @@
 #include "line_edition.h"
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int hook(void* data, char*ln)
 {
 	char *tmp;
+	int ret;
 
+	ret = 1;
 	tmp = (char*)data;
 	write(1, "data:", 5);
 	for (int i = 0; tmp[i]; i++)
@@ -14,8 +18,9 @@ int hook(void* data, char*ln)
 		write(1, ln + i, 1);
 	write(1, "\n", 1);
 	if (ln[0] == 'q')
-		return (0);
-	return (1);
+		ret = 0;
+	free (ln);
+	return (ret);
 }
 
 int main(void)
