@@ -90,24 +90,22 @@ t_line *line_reset(t_line *l)
 	return (l);
 }
 
-t_line *new_line(void)
+t_line new_line(void)
 {
-	t_line *l;
+	t_line l;
 
-	if (!(l = (t_line*)malloc(sizeof(t_line))))
-		return (0);
-	l->cursor = 0;
-	l->cursor_max = 0;
-	if (!(l->str = ft_strdup("")))
+	l.cursor = 0;
+	l.cursor_max = 0;
+	if (!(l.str = ft_strdup("")))
 	{
-		free (l);
-		return (0);
+		l.err = 1;
+		return (l);
 	}
-	l->cursor_advance = &line_advance_cursor;
-	l->cursor_back = &line_back_cursor;
-	l->write = &line_write;
-	l->cursor_delete = &line_delete_cursor;
-	l->reset = &line_reset;
-	l->err = 0;
+	l.cursor_advance = &line_advance_cursor;
+	l.cursor_back = &line_back_cursor;
+	l.write = &line_write;
+	l.cursor_delete = &line_delete_cursor;
+	l.reset = &line_reset;
+	l.err = 0;
 	return (l);	
 }

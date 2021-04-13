@@ -26,6 +26,6 @@
 	int line_delete_cursor(t_line *);
 	t_line *line_reset(t_line *);
 	t_line *line_write(t_line *, char *str);
-	t_line *new_line(void);
+	t_line new_line(void);
 
 #endif
