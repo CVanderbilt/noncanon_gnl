@@ -10,10 +10,8 @@ t_line *line_error(t_line *l)
 	return (l);
 }
 
-int line_advance_cursor(t_line *l, unsigned int n)
+int line_advance_cursor(t_line *l)
 {
-	char *tmp;
-	//write(0, "2k", 2);
 	if (l->cursor < l->cursor_max)
 	{
 		l->cursor = l->cursor + 1;
@@ -22,10 +20,8 @@ int line_advance_cursor(t_line *l, unsigned int n)
 	return 0;
 }
 
-int line_back_cursor(t_line *l, unsigned int n)
+int line_back_cursor(t_line *l)
 {
-	//write(0, "1k", 2);
-	char *tmp;
 	if (l->cursor > 0)
 	{
 		l->cursor = l->cursor -1;
