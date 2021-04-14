@@ -50,7 +50,6 @@ void set_term_specific(void)
     	printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
 
 	char *termtype = getenv ("TERM");
-	int success;
 
 	if (termtype == 0)
 		ft_fatal("Specify a terminal type with `setenv TERM <yourtype>'.\n", 0);
@@ -73,11 +72,6 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 {
 	set_term_specific();
 
-	int (*functptr[8])(char*, int); //array de funciones que llamar al tratar cada tipo de char
-	//Hay tantas como tipos de key hay
-
-
-	char buff[4];
 	t_key key;
 	t_line ln;
 
