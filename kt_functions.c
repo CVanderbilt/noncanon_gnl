@@ -42,6 +42,7 @@ void get_key(t_key *key)
 
 int kf_unrec(t_key *k)
 {
+	(void)k;
 	return (1);
 }
 
@@ -65,6 +66,7 @@ int kf_print(t_key *k)
 	write(0, buff, 1);
 	k->l.write(&k->l, buff);
 	k->l.cursor_advance(&k->l);
+
 	/*tmp = tgetstr("ei", NULL);
 	tputs(tmp, 1, &ft_putchar0);
 	free(tmp);*/
@@ -156,7 +158,6 @@ int kf_updown(t_key *k)
 int kf_del(t_key *k)
 {
 	//funcion de deleteo en line_edition
-	char *tmp;
 	char *save;
 	int i;
 	int len;
