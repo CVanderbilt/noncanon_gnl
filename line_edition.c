@@ -10,7 +10,7 @@ t_line *line_error(t_line *l)
 	return (l);
 }
 
-int line_advance_cursor(t_line *l, unsigned int n)
+int line_advance_cursor(t_line *l)
 {
 	char *tmp;
 	//write(0, "2k", 2);
@@ -22,7 +22,7 @@ int line_advance_cursor(t_line *l, unsigned int n)
 	return 0;
 }
 
-int line_back_cursor(t_line *l, unsigned int n)
+int line_back_cursor(t_line *l)
 {
 	//write(0, "1k", 2);
 	char *tmp;
@@ -90,24 +90,38 @@ t_line *line_reset(t_line *l)
 	return (l);
 }
 
-t_line *new_line(void)
+t_line new_line(void)
 {
-	t_line *l;
+	t_line l;
 
-	if (!(l = (t_line*)malloc(sizeof(t_line))))
-		return (0);
-	l->cursor = 0;
-	l->cursor_max = 0;
-	if (!(l->str = ft_strdup("")))
+	l.cursor = 0;
+	l.cursor_max = 0;
+	if (!(l.str = ft_strdup("")))
 	{
-		free (l);
-		return (0);
+		l.err = 1;
+		return (l);
 	}
-	l->cursor_advance = &line_advance_cursor;
-	l->cursor_back = &line_back_cursor;
-	l->write = &line_write;
-	l->cursor_delete = &line_delete_cursor;
-	l->reset = &line_reset;
-	l->err = 0;
+	l.cursor_advance = &line_advance_cursor;
+	l.cursor_back = &line_back_cursor;
+	l.write = &line_write;
+	l.cursor_delete = &line_delete_cursor;
+	l.reset = &line_reset;
+	l.err = 0;
 	return (l);	
+}
+
+t_history new_history(void)
+{
+	t_history h;
+
+	h.i = 0;
+	h.pos = 0;
+	h.limit_up = 0;
+	h.limit_down = 0;
+	h.hist[0] = NULL;
+	h.hist[1] = NULL;
+	h.hist[2] = NULL;
+	h.hist[3] = NULL;
+	h.hist[4] = NULL;
+	return (h);
 }

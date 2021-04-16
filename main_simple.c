@@ -82,6 +82,7 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 
 	key.line = ft_strdup("");
 	key.cursor = 0;
+	key.h = new_history();
 	key.l = new_line();
 	key.data = data;
 	key.prompt = prompt;
@@ -100,7 +101,7 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	}
 	write(0, "\nexiting...\n", 12);
 	write(0, "last line: ", 11);
-	ft_putstr_fd(0, key.l->str);
+	ft_putstr_fd(0, key.l.str);
 	write(0, "\n", 1);
 
 	set_term_basic();
