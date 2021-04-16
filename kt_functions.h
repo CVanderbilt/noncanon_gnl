@@ -17,6 +17,17 @@ typedef enum 	e_key_type
 	KT_EOL
 }				t_key_type;
 
+typedef enum	e_motion
+{
+	MOTION_NULL,
+	MOTION_UP,
+	MOTION_DOWN,
+	MOTION_LEFT,
+	MOTION_RIGHT,
+	MOTION_PREV,
+	MOTION_NEXT
+}				t_motion;
+
 typedef struct 	s_key
 {
 	int 		chars;

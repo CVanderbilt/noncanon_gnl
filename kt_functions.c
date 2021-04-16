@@ -52,6 +52,16 @@ int kf_unrec(t_key *k)
 *	*int, de manera que se actualize dentro de la propia función
 */
 
+void	check_history(t_key *k)
+{
+	char c;
+
+	ft_putstr_fd(2, "ME CAGUEN TODO");
+	dprintf(2, "\npos -> %i\ni -> %i\nlast -> %i\nlimits\nup: %i |||||| down: %i\n", k->h.pos, k->h.i, k->h.last, k->h.limit_up, k->h.limit_down);
+	for (int i = 0; i < 5; i++)
+		dprintf(2, "line %d: %s \n", i, k->h.hist[i]);
+}
+
 int kf_print(t_key *k)
 {
 	char buff[2];
@@ -64,6 +74,8 @@ int kf_print(t_key *k)
 	buff[1] = 0;
 	buff[0] = k->key[0];
 	write(0, buff, 1);
+	if (buff[0] == 'p')
+		check_history(k);
 	k->l.write(&k->l, buff);
 	k->l.cursor_advance(&k->l);
 
@@ -115,24 +127,34 @@ int kf_hist_print(t_key *k)
 	return (1);
 }
 
+int	hs_move_cursor(t_key *k, t_motion m)
+{
+	if (m == MOTION_UP)
+		k->h.pos--;
+	else if (m == MOTION_DOWN)
+		k->h.pos = (k->h.pos + 1) % 5;
+	if (k->h.pos < 0)
+		k->h.pos = 4;
+	return (1);
+}
+
+
+
 int kf_updown(t_key *k)
 {
-	char *str;
-
 	ft_save(k, k->l.str);
 	if (k->type == KT_UP)
 	{
 		if (!k->h.limit_up)
 		{
 			k->h.limit_down = 0;
-			k->h.pos--;
-			k->h.pos = (k->h.pos < 0) ? 4 : k->h.pos;
-			if (k->h.pos == k->h.i && (k->h.pos++ || 1))
+			hs_move_cursor(k, MOTION_UP);
+			if (k->h.pos == k->h.i && (hs_move_cursor(k, MOTION_DOWN)))
 				return (++k->h.limit_up);
 			if (k->h.hist[k->h.pos])
 				kf_hist_print(k);
 			else
-				k->h.pos = (k->h.pos >= 4) ? 0 : k->h.pos++;
+				hs_move_cursor(k, MOTION_DOWN);
 		}
 		return (1);
 	}
@@ -141,14 +163,11 @@ int kf_updown(t_key *k)
 		if (!k->h.limit_down)
 		{
 			k->h.limit_up = 0;
-			k->h.pos++;
-			k->h.pos = (k->h.pos > 4) ? 0 : k->h.pos;
+			hs_move_cursor(k, MOTION_DOWN);
 			if (k->h.pos == k->h.i)
 				k->h.limit_down++;
 			if (k->h.hist[k->h.pos])
 				kf_hist_print(k);
-			else
-				k->h.pos = (k->h.pos <= 0) ? 4 : k->h.pos--;
 			return (1);
 		}
 	}
@@ -199,23 +218,23 @@ int	ft_save_new(t_key *key, const char *str)
 	if (key->h.i > 4)
 		key->h.i = 0;
 	key->h.pos = key->h.i;
+	key->h.limit_down = 1;
+	key->h.limit_up = 0;
 	return (1);
 }
 
 int kf_eol(t_key *k)
 {
-	int i;
 	int ret;
 	char *tmp;
 	
-	i = -1;
 	write(0, "\n", 1);
 	tputs(tgetstr("cr", 0), 1, &ft_putchar0);
 	tmp = ft_strdup(k->l.str);
 	k->l.reset(&k->l);
 	set_term_basic();
+	ft_save_new(k, tmp);  // poner condicion para no guardar strings vacias
 	ret = k->hook(k->data, tmp);
-	ft_save_new(k, tmp);
 	set_term_specific();
 	write(0, k->prompt, k->prompt_len);
 	return (ret);

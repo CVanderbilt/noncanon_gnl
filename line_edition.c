@@ -76,9 +76,6 @@ int line_delete_cursor(t_line *l)
 
 t_line *line_reset(t_line *l)
 {
-	int i;
-
-	i = -1;
 	l->cursor = 0;
 	l->cursor_max = 0;
 	free (l->str);

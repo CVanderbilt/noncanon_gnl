@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: eherrero <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: ellaca-f <ericllaca@gmail.com>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/07 13:05:48 by eherrero          #+#    #+#              #
-#    Updated: 2019/11/11 15:00:10 by eherrero         ###   ########.fr        #
+#    Updated: 2021/04/16 12:51:33 by ellaca-f         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME=non_canon_gnl.a
 
 CC=gcc
 
-CFLAGS=-Wall -Wextra -Werror -O3
+CFLAGS=-Wall -Wextra -Werror
 
 RM=rm -f
 
