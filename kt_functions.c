@@ -60,16 +60,17 @@ int kf_print(t_key *k)
 	tmp = tgetstr("im", NULL);
 	tputs(tmp, 1, &ft_putchar0);
 	free(tmp);*/
-	//tputs(tgetstr("im", NULL), 1, &ft_putchar0);
+	tputs(tgetstr("im", NULL), 1, &ft_putchar0);
 	buff[1] = 0;
 	buff[0] = k->key[0];
 	write(0, buff, 1);
-	k->l->write(k->l, buff);
-	k->l->cursor_advance(k->l);
+	k->l.write(&k->l, buff);
+	k->l.cursor_advance(&k->l);
+
 	/*tmp = tgetstr("ei", NULL);
 	tputs(tmp, 1, &ft_putchar0);
 	free(tmp);*/
-	//tputs(tgetstr("ei", NULL), 1, &ft_putchar0);
+	tputs(tgetstr("ei", NULL), 1, &ft_putchar0);
 	return (1);
 }
 
@@ -88,16 +89,69 @@ int kf_move(t_key *k)
 	*/
 
 	tmp = tgetstr(k->type == KT_LEFT ? "le" : "nd", NULL);
-	if (k->type == KT_LEFT ? k->l->cursor_back(k->l) : k->l->cursor_advance(k->l))
+	if (k->type == KT_LEFT ? k->l.cursor_back(&k->l) : k->l.cursor_advance(&k->l))
 	//	write(0, k->key, 4);
 		tputs(tmp, 1, &ft_putchar0);
 	//free(tmp);
 	return (1);
 }
 
+int kf_hist_print(t_key *k)
+{
+	int	c;
+	char *tmp;
+
+	tmp = tgetstr("dl", NULL);
+	tputs(tmp, 1, &ft_putchar0);
+	tputs(tgetstr("im", NULL), 1, &ft_putchar0);
+	write(0, "prompt", 6);
+	write(0, k->h.hist[k->h.pos], ft_strlen(k->h.hist[k->h.pos]));
+	k->l.reset(&k->l);
+	k->l.write(&k->l, k->h.hist[k->h.pos]);
+	c = k->l.cursor_advance(&k->l);
+	while (c)
+		c = k->l.cursor_advance(&k->l);
+	tputs(tgetstr("ei", NULL), 1, &ft_putchar0);
+	return (1);
+}
+
 int kf_updown(t_key *k)
 {
-	(void)k;
+	char *str;
+
+	ft_save(k, k->l.str);
+	if (k->type == KT_UP)
+	{
+		if (!k->h.limit_up)
+		{
+			k->h.limit_down = 0;
+			k->h.pos--;
+			k->h.pos = (k->h.pos < 0) ? 4 : k->h.pos;
+			if (k->h.pos == k->h.i && (k->h.pos++ || 1))
+				return (++k->h.limit_up);
+			if (k->h.hist[k->h.pos])
+				kf_hist_print(k);
+			else
+				k->h.pos = (k->h.pos >= 4) ? 0 : k->h.pos++;
+		}
+		return (1);
+	}
+	else
+	{
+		if (!k->h.limit_down)
+		{
+			k->h.limit_up = 0;
+			k->h.pos++;
+			k->h.pos = (k->h.pos > 4) ? 0 : k->h.pos;
+			if (k->h.pos == k->h.i)
+				k->h.limit_down++;
+			if (k->h.hist[k->h.pos])
+				kf_hist_print(k);
+			else
+				k->h.pos = (k->h.pos <= 0) ? 4 : k->h.pos--;
+			return (1);
+		}
+	}
 	return (1);
 }
 
@@ -109,9 +163,9 @@ int kf_del(t_key *k)
 	int len;
 
 	//delete en la consola
-	if (k->l->cursor == 0)
+	if (k->l.cursor == 0)
 		return (1);
-	save = ft_strdup(k->l->str + k->l->cursor);
+	save = ft_strdup(k->l.str + k->l.cursor);
 	if (!save)
 		return (0);
 	
@@ -124,12 +178,28 @@ int kf_del(t_key *k)
 	while (++i < len)
 		tputs(tgetstr("le", NULL), 1, &ft_putchar0);
 	//delete en la consola
-	k->l->cursor_delete(k->l);
+	k->l.cursor_delete(&k->l);
 	return (1);
 }
-void ft_save(char *str)
+
+int ft_save(t_key *key, const char *str)
 {
-	(void)str;
+	if (key->h.hist[key->h.pos])
+		free(key->h.hist[key->h.pos]);
+	key->h.hist[key->h.pos] = ft_strdup(str);
+	return (1);
+}
+
+int	ft_save_new(t_key *key, const char *str)
+{
+	key->h.pos = key->h.i;
+	key->h.last = key->h.i;
+	ft_save(key, str);
+	key->h.i++;
+	if (key->h.i > 4)
+		key->h.i = 0;
+	key->h.pos = key->h.i;
+	return (1);
 }
 
 int kf_eol(t_key *k)
@@ -137,15 +207,15 @@ int kf_eol(t_key *k)
 	int i;
 	int ret;
 	char *tmp;
+	
 	i = -1;
-	ft_save(k->l->str);
 	write(0, "\n", 1);
 	tputs(tgetstr("cr", 0), 1, &ft_putchar0);
-	tmp = ft_strdup(k->l->str);
-	k->l->reset(k->l);
+	tmp = ft_strdup(k->l.str);
+	k->l.reset(&k->l);
 	set_term_basic();
 	ret = k->hook(k->data, tmp);
-	
+	ft_save_new(k, tmp);
 	set_term_specific();
 	write(0, k->prompt, k->prompt_len);
 	return (ret);

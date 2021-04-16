@@ -76,8 +76,9 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	t_line ln;
 
 	key.cursor = 0;
-	ln = new_line();
-	key.l = &ln;
+	key.h = new_history();
+	key.l = new_line();
+
 	key.data = data;
 	key.prompt = prompt;
 	key.prompt_len = ft_strlen(prompt);
@@ -95,7 +96,7 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	}
 	write(0, "\nexiting...\n", 12);
 	write(0, "last line: ", 11);
-	ft_putstr_fd(0, key.l->str);
+	ft_putstr_fd(0, key.l.str);
 	free (key.l->str);
 	write(0, "\n", 1);
 

@@ -24,7 +24,8 @@ typedef struct 	s_key
 	t_key_type 	type;
 	char		*line;
 	unsigned	cursor;
-	t_line		*l;
+	t_line		l;
+	t_history	h;
 	//estas inicializaciones se harán a través de line_edition_main
 	int		 	(*hook)(void *data, char *line); 	//hook function to call at eol find
 	void		*data;								//data to be passed to hook function (unchanged)
@@ -35,6 +36,7 @@ typedef struct 	s_key
 void set_key_type(t_key *key);
 void get_key(t_key *key);
 int ft_manage_key(t_key *key);
+int	ft_save(t_key *key, const char *str);
 
 
 

@@ -16,6 +16,16 @@
 		unsigned int	err;
 	}					t_line;
 
+	typedef struct		s_history
+	{
+		char			*hist[5];
+		int				i;
+		int				pos;
+		int				last;
+		int				limit_up;
+		int				limit_down;
+	}					t_history;
+
 	//public
 	int line_edition_loop(void *, const char *str, int (*hook)(void *, char *));
 	//internal
@@ -27,5 +37,6 @@
 	t_line *line_reset(t_line *);
 	t_line *line_write(t_line *, char *str);
 	t_line new_line(void);
+	t_history new_history(void);
 
 #endif

@@ -105,3 +105,19 @@ t_line new_line(void)
 	l.err = 0;
 	return (l);	
 }
+
+t_history new_history(void)
+{
+	t_history h;
+
+	h.i = 0;
+	h.pos = 0;
+	h.limit_up = 0;
+	h.limit_down = 0;
+	h.hist[0] = NULL;
+	h.hist[1] = NULL;
+	h.hist[2] = NULL;
+	h.hist[3] = NULL;
+	h.hist[4] = NULL;
+	return (h);
+}
