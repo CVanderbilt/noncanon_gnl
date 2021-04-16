@@ -79,10 +79,8 @@ int ft_putchar0(int c)
 
 static int	ft_dgts(long int n)
 {
-	int div;
 	int i;
 
-	div = 1;
 	i = 0;
 	n = n < 0 ? n * -1 : n;
 	if (n < 10)

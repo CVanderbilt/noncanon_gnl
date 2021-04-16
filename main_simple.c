@@ -12,12 +12,6 @@
 #include "kt_functions.h"
 #include "line_edition.h"
 
-#ifdef unix
-static char term_buffer[2048];
-#else
-#define term_buffer 0
-#endif
-
 void ft_fatal(const char *str, const char *str2)
 {
 	if (str) printf("%s", str);
@@ -73,19 +67,14 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	set_term_specific();
 
 	t_key key;
-	t_line ln;
 
 	key.cursor = 0;
 	key.h = new_history();
 	key.l = new_line();
-
 	key.data = data;
 	key.prompt = prompt;
 	key.prompt_len = ft_strlen(prompt);
 	key.hook = hook;
-
-	
-
 	while(1)
 	{
 		key.type = KT_UNRECOGNIZED;
@@ -94,12 +83,13 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 			break ;
 		//ft_refresh(key.line);
 	}
+	for (int i = 0; i < 5; i++)
+		free(key.h.hist[i]);
 	write(0, "\nexiting...\n", 12);
 	write(0, "last line: ", 11);
 	ft_putstr_fd(0, key.l.str);
-	free (key.l->str);
+	free (key.l.str);
 	write(0, "\n", 1);
-
 	set_term_basic();
 	return (0);
 }
