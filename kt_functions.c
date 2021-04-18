@@ -54,8 +54,6 @@ int kf_unrec(t_key *k)
 
 void	check_history(t_key *k)
 {
-	char c;
-
 	ft_putstr_fd(2, "ME CAGUEN TODO");
 	dprintf(2, "\npos -> %i\ni -> %i\nlast -> %i\nlimits\nup: %i |||||| down: %i\n", k->h.pos, k->h.i, k->h.last, k->h.limit_up, k->h.limit_down);
 	for (int i = 0; i < 5; i++)
