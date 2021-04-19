@@ -115,7 +115,7 @@ int kf_hist_print(t_key *k)
 	tputs(tmp, 1, &ft_putchar0);
 	tputs(tgetstr("cr", NULL), 1, &ft_putchar0);
 	tputs(tgetstr("im", NULL), 1, &ft_putchar0);
-	write(0, "prompt", 6);
+	ft_putstr_fd(0, k->prompt);
 	write(0, k->h.hist[k->h.pos], ft_strlen(k->h.hist[k->h.pos]));
 	k->l.reset(&k->l);
 	k->l.write(&k->l, k->h.hist[k->h.pos]);
