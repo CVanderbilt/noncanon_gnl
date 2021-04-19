@@ -74,6 +74,7 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	key.data = data;
 	key.prompt = prompt;
 	key.prompt_len = ft_strlen(prompt);
+	write(0, key.prompt, key.prompt_len);
 	key.hook = hook;
 	while(1)
 	{
