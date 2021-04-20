@@ -72,8 +72,6 @@ int kf_print(t_key *k)
 	buff[1] = 0;
 	buff[0] = k->key[0];
 	write(0, buff, 1);
-	if (buff[0] == 'p')
-		check_history(k);
 	k->l.write(&k->l, buff);
 	k->l.cursor_advance(&k->l);
 
