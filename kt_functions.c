@@ -72,8 +72,6 @@ int kf_print(t_key *k)
 	buff[1] = 0;
 	buff[0] = k->key[0];
 	write(0, buff, 1);
-	if (buff[0] == 'p')
-		check_history(k);
 	k->l.write(&k->l, buff);
 	k->l.cursor_advance(&k->l);
 
@@ -115,7 +113,7 @@ int kf_hist_print(t_key *k)
 	tputs(tmp, 1, &ft_putchar0);
 	tputs(tgetstr("cr", NULL), 1, &ft_putchar0);
 	tputs(tgetstr("im", NULL), 1, &ft_putchar0);
-	write(0, "prompt", 6);
+	ft_putstr_fd(0, k->prompt);
 	write(0, k->h.hist[k->h.pos], ft_strlen(k->h.hist[k->h.pos]));
 	k->l.reset(&k->l);
 	k->l.write(&k->l, k->h.hist[k->h.pos]);
@@ -227,15 +225,14 @@ int kf_eol(t_key *k)
 	int ret;
 	char *tmp;
 	
-	write(0, "\n", 1);
-	tputs(tgetstr("cr", 0), 1, &ft_putchar0);
 	tmp = ft_strdup(k->l.str);
-	k->l.reset(&k->l);
+	new_line_reset(k);
+	if (*tmp)
+		ft_save_new(k, tmp);  // poner condicion para no guardar strings vacias
 	set_term_basic();
-	ft_save_new(k, tmp);  // poner condicion para no guardar strings vacias
 	ret = k->hook(k->data, tmp);
 	set_term_specific();
-	write(0, k->prompt, k->prompt_len);
+	write_prompt(k);
 	return (ret);
 }
 

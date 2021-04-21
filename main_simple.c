@@ -12,6 +12,10 @@
 #include "kt_functions.h"
 #include "line_edition.h"
 
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 void ft_fatal(const char *str, const char *str2)
 {
 	if (str) printf("%s", str);
@@ -68,12 +72,15 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 
 	t_key key;
 
+	sig_init();
+	g_key = &key;
 	key.cursor = 0;
 	key.h = new_history();
 	key.l = new_line();
 	key.data = data;
 	key.prompt = prompt;
 	key.prompt_len = ft_strlen(prompt);
+	write(0, key.prompt, key.prompt_len);
 	key.hook = hook;
 	while(1)
 	{

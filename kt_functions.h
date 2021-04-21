@@ -44,6 +44,8 @@ typedef struct 	s_key
 	unsigned	prompt_len; 
 }				t_key;
 
+t_key				*g_key;
+
 void set_key_type(t_key *key);
 void get_key(t_key *key);
 int ft_manage_key(t_key *key);
