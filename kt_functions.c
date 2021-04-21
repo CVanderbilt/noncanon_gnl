@@ -225,15 +225,14 @@ int kf_eol(t_key *k)
 	int ret;
 	char *tmp;
 	
-	write(0, "\n", 1);
-	tputs(tgetstr("cr", 0), 1, &ft_putchar0);
 	tmp = ft_strdup(k->l.str);
-	k->l.reset(&k->l);
+	new_line_reset(k);
+	if (*tmp)
+		ft_save_new(k, tmp);  // poner condicion para no guardar strings vacias
 	set_term_basic();
-	ft_save_new(k, tmp);  // poner condicion para no guardar strings vacias
 	ret = k->hook(k->data, tmp);
 	set_term_specific();
-	write(0, k->prompt, k->prompt_len);
+	write_prompt(k);
 	return (ret);
 }
 
