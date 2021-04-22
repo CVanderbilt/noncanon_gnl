@@ -232,7 +232,8 @@ int kf_eol(t_key *k)
 	set_term_basic();
 	ret = k->hook(k->data, tmp);
 	set_term_specific();
-	write_prompt(k);
+	if (ret)
+		write_prompt(k);
 	return (ret);
 }
 
