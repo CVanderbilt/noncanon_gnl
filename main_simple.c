@@ -64,15 +64,13 @@ void ft_putchar(char c)
 	write(0, &c, 1);
 }
 
-
-
 int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *))
 {
-	set_term_specific();
-
 	t_key key;
 
+	set_term_specific();
 	sig_init();
+	set_wdata(&key.w);
 	g_key = &key;
 	key.cursor = 0;
 	key.h = new_history();

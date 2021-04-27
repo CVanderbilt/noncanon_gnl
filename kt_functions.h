@@ -3,6 +3,7 @@
 # define KT_FUNCNUM 9
 # define ISPRINTABLE(c) (c > 31 && c < 127)
 # include "line_edition.h"
+# include <sys/ioctl.h>
 
 typedef enum 	e_key_type
 {
@@ -41,11 +42,14 @@ typedef struct 	s_key
 	int		 	(*hook)(void *data, char *line); 	//hook function to call at eol find
 	void		*data;								//data to be passed to hook function (unchanged)
 	const char 	*prompt;							//prompt to be printed after each eol
-	unsigned	prompt_len; 
+	unsigned	prompt_len;
+	struct winsize w;
 }				t_key;
 
 t_key				*g_key;
 
+
+void set_wdata(struct winsize (*w));
 void set_key_type(t_key *key);
 void get_key(t_key *key);
 int ft_manage_key(t_key *key);

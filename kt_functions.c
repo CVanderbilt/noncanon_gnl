@@ -104,13 +104,41 @@ int kf_move(t_key *k)
 	return (1);
 }
 
+void move_cursors_to_back(t_key *k)
+{
+	while (k->l.cursor_back(&k->l))
+		tputs(tgetstr("le", NULL), 1, ft_putchar0);
+}
+
+void move_cursors_to_end(t_key *k)
+{
+	while (k->l.cursor_advance(&k->l))
+		tputs(tgetstr("nd", NULL), 1, ft_putchar0);
+}
+
+void line_deletion(t_key *k)
+{
+	int line_len;
+	int lines_n;
+	float f;
+
+	line_len = ft_strlen(k->l.str) + k->prompt_len;
+	f = line_len / k->w.ws_col;
+	lines_n = (int)f;
+	if (f - lines_n != 0)
+		lines_n++;
+	if (lines_n > 0)
+		tputs(tgetstr("up", 0), lines_n, ft_putchar0);
+	tputs(tgetstr("cr", 0), 0, ft_putchar0);
+	tputs(tgetstr("cd", 0), lines_n, ft_putchar0);
+	k->l.reset(&k->l);
+}
+
 int kf_hist_print(t_key *k)
 {
 	int	c;
-	char *tmp;
 
-	tmp = tgetstr("dl", NULL);
-	tputs(tmp, 1, &ft_putchar0);
+	line_deletion(k);
 	tputs(tgetstr("cr", NULL), 1, &ft_putchar0);
 	tputs(tgetstr("im", NULL), 1, &ft_putchar0);
 	ft_putstr_fd(0, k->prompt);
@@ -226,6 +254,7 @@ int kf_eol(t_key *k)
 	char *tmp;
 	
 	tmp = ft_strdup(k->l.str);
+	move_cursors_to_end(k);
 	new_line_reset(k);
 	if (*tmp)
 		ft_save_new(k, tmp);  // poner condicion para no guardar strings vacias

@@ -1,6 +1,8 @@
 #include "utils.h"
+#include "kt_functions.h"
 #include "sig_handler.h"
 #include <stdio.h>
+#include <sys/ioctl.h>
 
 //ctrl-c sigint -> salto de linea reseteando la linea, no se guard
 //ctrl-4 (ctrl-\) -> nada
@@ -21,4 +23,9 @@ int sig_init(void)
   		return (0);
 	
 	return (1);
+}
+
+void set_wdata(struct winsize (*w))
+{	
+	ioctl(STDIN_FILENO, TIOCGWINSZ, w);
 }

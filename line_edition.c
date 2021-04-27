@@ -62,7 +62,7 @@ int line_delete_cursor(t_line *l)
 
 	i = l->cursor - 1;
 	if (i < 0)
-		return (1);
+		return (0);
 	l->cursor = i;
 	while (l->str[i + 1])
 	{
