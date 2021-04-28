@@ -18,7 +18,7 @@ unsigned short get_col(t_key *k)
 	return ((k->l.cursor + k->prompt_len) % k->w.ws_col);
 }
 
-void move_cursor_left(t_key *k)
+int move_cursor_left(t_key *k)
 {
 	unsigned short col;
 	int i;
@@ -26,7 +26,7 @@ void move_cursor_left(t_key *k)
 	i = -1;
 	col = get_col(k);
 	if (!k->l.cursor_back(&k->l))
-		return ;
+		return (0);
 	if (col == 0)
 	{
 		tputs(tgetstr("up", 0), 1, ft_putchar0);
@@ -35,9 +35,10 @@ void move_cursor_left(t_key *k)
 	}
 	else
 		tputs(tgetstr("le", 0), 1, ft_putchar0);
+	return (1);
 }
 
-void move_cursor_right(t_key *k)
+int move_cursor_right(t_key *k)
 {
 	unsigned short col;
 	int i;
@@ -45,28 +46,33 @@ void move_cursor_right(t_key *k)
 	i = -1;
 	col = get_col(k);
 	if (!k->l.cursor_advance(&k->l))
-		return ;
+		return (0);
 	if (col == k->w.ws_col - 1)
 	{
-		//se mueve al principio de la linea y una linea hacia abajo
 		tputs(tgetstr("do", 0), 1, ft_putchar0);
 		tputs(tgetstr("cr", 0), 1, ft_putchar0);
 	}
 	else
-	{
-		//se mueve un char hacia delante
 		tputs(tgetstr("nd", 0), 1, ft_putchar0);
-	}
+	return (1);
 }
 
-void move_cursors_to_back(t_key *k)
+int move_cursors_to_back(t_key *k)
 {
-	while (k->l.cursor_back(&k->l))
-		move_cursor_left(k);
+	int i;
+
+	i = 0;
+	while (move_cursor_left(k))
+		i++;
+	return (i);
 }
 
-void move_cursors_to_end(t_key *k)
+int move_cursors_to_end(t_key *k)
 {
-	while (k->l.cursor_advance(&k->l))
-		move_cursor_right(k);
+	int i;
+
+	i = 0;
+	while (move_cursor_right(k))
+		i++;
+	return (i);
 }

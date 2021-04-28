@@ -49,6 +49,7 @@ typedef struct 	s_key
 t_key				*g_key;
 
 
+void line_deletion(t_key *k);
 void set_wdata(struct winsize (*w));
 void set_key_type(t_key *key);
 void get_key(t_key *key);

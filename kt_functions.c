@@ -115,18 +115,16 @@ void line_deletion(t_key *k)
 {
 	int line_len;
 	int lines_n;
-	float f;
-
-	line_len = ft_strlen(k->l.str) + ft_strlen(k->prompt);
-	f = (float)line_len / (float)k->w.ws_col;
-	lines_n = (int)f;
-	if (f - lines_n != 0)
-		lines_n++;
-	if (lines_n > 0)
-		tputs(tgetstr("up", 0), lines_n, ft_putchar0);
-	tputs(tgetstr("cr", 0), 0, ft_putchar0);
-	tputs(tgetstr("cd", 0), lines_n, ft_putchar0);
-	k->l.reset(&k->l);
+	int row;
+	
+	line_len = ft_strlen(k->prompt) + k->l.cursor;
+	lines_n = line_len / k->w.ws_col;
+	if (lines_n >= k->w.ws_row)
+		lines_n = k->w.ws_row - 1;
+	cursor_position(0, &row, 0);
+	row -= lines_n;
+	tputs(tgoto(tgetstr("cm", NULL), 0, row), 0, ft_putchar0);
+	tputs(tgetstr("cd", NULL), k->w.ws_row - row, ft_putchar0);
 }
 
 int kf_hist_print(t_key *k)
@@ -134,8 +132,6 @@ int kf_hist_print(t_key *k)
 	int	c;
 
 	line_deletion(k);
-	tputs(tgetstr("cr", NULL), 1, &ft_putchar0);
-	tputs(tgetstr("im", NULL), 1, &ft_putchar0);
 	ft_putstr_fd(0, k->prompt);
 	write(0, k->h.hist[k->h.pos], ft_strlen(k->h.hist[k->h.pos]));
 	k->l.reset(&k->l);
@@ -143,7 +139,6 @@ int kf_hist_print(t_key *k)
 	c = k->l.cursor_advance(&k->l);
 	while (c)
 		c = k->l.cursor_advance(&k->l);
-	tputs(tgetstr("ei", NULL), 1, &ft_putchar0);
 	return (1);
 }
 
@@ -196,28 +191,19 @@ int kf_updown(t_key *k)
 
 int kf_del(t_key *k)
 {
-	//funcion de deleteo en line_edition
-	char *save;
-	int i;
-	int len;
+	int cursor;
 
-	//delete en la consola
-	if (k->l.cursor == 0)
+	if (!k->l.cursor)
 		return (1);
-	save = ft_strdup(k->l.str + k->l.cursor);
-	if (!save)
-		return (0);
-	
-	tputs(tgetstr("le", NULL), 1, &ft_putchar0);
-	tputs(tgetstr("sc", NULL), 0, &ft_putchar0);
-	tputs(tgetstr("cd", NULL), 0, &ft_putchar0);
-	ft_putstr_fd(0, save);
-	i = -1;
-	len = ft_strlen(save);
-	free(save);
-	tputs(tgetstr("rc", NULL), 0, ft_putchar0);
-	//delete en la consola
+	tputs(tgetstr("sc", NULL), 0, ft_putchar0);
+	line_deletion(k);
+	ft_putstr_fd(0, k->prompt);
 	k->l.cursor_delete(&k->l);
+	cursor = k->l.cursor;
+	ft_putstr_fd(0, k->l.str);
+	tputs(tgetstr("rc", NULL), 0, ft_putchar0);
+	k->l.cursor++;
+	move_cursor_left(k);
 	return (1);
 }
 
