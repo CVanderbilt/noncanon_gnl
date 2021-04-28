@@ -38,13 +38,6 @@ char *read_until_c(int fd, char e)
 	return (ret);
 }
 
-int isDigit(int n)
-{
-	if (n >= 48 && n <= 57)
-		return (1);
-	return (0);
-}
-
 int cursor_position(const int tty, int *const rowptr, int *const colptr)
 {
 	char *response;
@@ -65,7 +58,7 @@ int cursor_position(const int tty, int *const rowptr, int *const colptr)
 			break ;
 		i = 2;
 		r = ft_atoi(response + i);
-		while (isDigit(response[i]))
+		while (ft_is_digit(response[i]))
 			i++;
 		if (response[i] != ';')
 			break ;
