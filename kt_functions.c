@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "kt_functions.h"
 #include "line_edition.h"
+#include "motion.h"
 
 void set_key_type(t_key *key)
 {
@@ -62,29 +63,36 @@ void	check_history(t_key *k)
 
 int kf_print(t_key *k)
 {
+	char *save;
 	char buff[2];
 
 	/*char *tmp;
 	tmp = tgetstr("im", NULL);
 	tputs(tmp, 1, &ft_putchar0);
 	free(tmp);*/
-	tputs(tgetstr("im", NULL), 1, &ft_putchar0);
+	tputs(tgetstr("sc", NULL), 0, &ft_putchar0);
+	save = ft_strdup(k->l.str + k->l.cursor);
+	if (!save)
+		return (1); //memory error
 	buff[1] = 0;
 	buff[0] = k->key[0];
 	write(0, buff, 1);
+	ft_putstr_fd(0, save); //revisar como escribimos
+	tputs(tgetstr("rc", NULL), 0, &ft_putchar0);
+	if ((get_col(k) + ft_strlen(save)) == k->w.ws_col)
+		tputs(tgetstr("up", 0), 1, ft_putchar0);
+	free (save);
 	k->l.write(&k->l, buff);
-	k->l.cursor_advance(&k->l);
+	move_cursor_right(k);
 
 	/*tmp = tgetstr("ei", NULL);
 	tputs(tmp, 1, &ft_putchar0);
 	free(tmp);*/
-	tputs(tgetstr("ei", NULL), 1, &ft_putchar0);
 	return (1);
 }
 
 int kf_move(t_key *k)
 {
-	char *tmp;
 
 	/*
 	*	para todos estos problemas con los frees:
@@ -96,23 +104,34 @@ int kf_move(t_key *k)
 	*	habrá que revisar los leaks
 	*/
 
-	tmp = tgetstr(k->type == KT_LEFT ? "le" : "nd", NULL);
-	if (k->type == KT_LEFT ? k->l.cursor_back(&k->l) : k->l.cursor_advance(&k->l))
-	//	write(0, k->key, 4);
-		tputs(tmp, 1, &ft_putchar0);
-	//free(tmp);
+	if (k->type == KT_LEFT)
+		move_cursor_left(k);
+	else if (k->type == KT_RIGHT)
+		move_cursor_right(k);
 	return (1);
+}
+
+void line_deletion(t_key *k)
+{
+	int line_len;
+	int lines_n;
+	int row;
+	
+	line_len = ft_strlen(k->prompt) + k->l.cursor;
+	lines_n = line_len / k->w.ws_col;
+	if (lines_n >= k->w.ws_row)
+		lines_n = k->w.ws_row - 1;
+	cursor_position(0, &row, 0);
+	row -= lines_n;
+	tputs(tgoto(tgetstr("cm", NULL), 0, row), 0, ft_putchar0);
+	tputs(tgetstr("cd", NULL), k->w.ws_row - row, ft_putchar0);
 }
 
 int kf_hist_print(t_key *k)
 {
 	int	c;
-	char *tmp;
 
-	tmp = tgetstr("dl", NULL);
-	tputs(tmp, 1, &ft_putchar0);
-	tputs(tgetstr("cr", NULL), 1, &ft_putchar0);
-	tputs(tgetstr("im", NULL), 1, &ft_putchar0);
+	line_deletion(k);
 	ft_putstr_fd(0, k->prompt);
 	write(0, k->h.hist[k->h.pos], ft_strlen(k->h.hist[k->h.pos]));
 	k->l.reset(&k->l);
@@ -120,7 +139,6 @@ int kf_hist_print(t_key *k)
 	c = k->l.cursor_advance(&k->l);
 	while (c)
 		c = k->l.cursor_advance(&k->l);
-	tputs(tgetstr("ei", NULL), 1, &ft_putchar0);
 	return (1);
 }
 
@@ -173,28 +191,19 @@ int kf_updown(t_key *k)
 
 int kf_del(t_key *k)
 {
-	//funcion de deleteo en line_edition
-	char *save;
-	int i;
-	int len;
+	int cursor;
 
-	//delete en la consola
-	if (k->l.cursor == 0)
+	if (!k->l.cursor)
 		return (1);
-	save = ft_strdup(k->l.str + k->l.cursor);
-	if (!save)
-		return (0);
-	
-	tputs(tgetstr("le", NULL), 1, &ft_putchar0);
-	tputs(tgetstr("cd", NULL), 0, &ft_putchar0);
-	ft_putstr_fd(0, save);
-	i = -1;
-	len = ft_strlen(save);
-	free(save);
-	while (++i < len)
-		tputs(tgetstr("le", NULL), 1, &ft_putchar0);
-	//delete en la consola
+	tputs(tgetstr("sc", NULL), 0, ft_putchar0);
+	line_deletion(k);
+	ft_putstr_fd(0, k->prompt);
 	k->l.cursor_delete(&k->l);
+	cursor = k->l.cursor;
+	ft_putstr_fd(0, k->l.str);
+	tputs(tgetstr("rc", NULL), 0, ft_putchar0);
+	k->l.cursor++;
+	move_cursor_left(k);
 	return (1);
 }
 
@@ -226,6 +235,7 @@ int kf_eol(t_key *k)
 	char *tmp;
 	
 	tmp = ft_strdup(k->l.str);
+	move_cursors_to_end(k);
 	new_line_reset(k);
 	if (*tmp)
 		ft_save_new(k, tmp);  // poner condicion para no guardar strings vacias

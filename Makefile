@@ -26,7 +26,7 @@ HDDIRS=-I includes/
 
 
 
-SRC=kt_functions.c line_edition.c main_simple.c utils.c sig_handler.c
+SRC=kt_functions.c line_edition.c main_simple.c utils.c sig_handler.c motion.c ask_cursor_pos.c
 
 OBJ=$(SRC:.c=.o)
 
