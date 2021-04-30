@@ -40,7 +40,7 @@ void goto_cursor(t_key *k, unsigned int dst)
 	int offset;
 	int teorical_row;
 
-	if (dst >= k->l.cursor_max || dst == k->l.cursor) //revisar si es >= o solo > y si ya está en el cursor destino
+	if (dst > k->l.cursor_max || dst == k->l.cursor) //revisar si es >= o solo > y si ya está en el cursor destino
 		return ;
 	cursor_position(0, &l, &c);
 	offset = get_offset(k, c);
