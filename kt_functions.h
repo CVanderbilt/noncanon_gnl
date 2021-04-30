@@ -35,7 +35,6 @@ typedef struct 	s_key
 	char 		key[4];
 	t_key_type 	type;
 	char		*line;
-	unsigned	cursor;
 	t_line		l;
 	t_history	h;
 	//estas inicializaciones se harán a través de line_edition_main
