@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "kt_functions.h"
 #include "line_edition.h"
+#include "motion.h"
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -72,7 +73,6 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	sig_init();
 	set_wdata(&key.w);
 	g_key = &key;
-	key.cursor = 0;
 	key.h = new_history();
 	key.l = new_line();
 	key.data = data;

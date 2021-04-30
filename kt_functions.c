@@ -79,7 +79,8 @@ int kf_print(t_key *k)
 	write(0, buff, 1);
 	ft_putstr_fd(0, save); //revisar como escribimos
 	tputs(tgetstr("rc", NULL), 0, &ft_putchar0);
-	if ((get_col(k) + ft_strlen(save)) == k->w.ws_col)
+	if (!((get_col() + ft_strlen(save)) % k->w.ws_col) &&
+		k->l.cursor < k->l.cursor_max)
 		tputs(tgetstr("up", 0), 1, ft_putchar0);
 	free (save);
 	k->l.write(&k->l, buff);
@@ -113,18 +114,29 @@ int kf_move(t_key *k)
 
 void line_deletion(t_key *k)
 {
-	int line_len;
-	int lines_n;
-	int row;
-	
-	line_len = ft_strlen(k->prompt) + k->l.cursor;
-	lines_n = line_len / k->w.ws_col;
-	if (lines_n >= k->w.ws_row)
-		lines_n = k->w.ws_row - 1;
-	cursor_position(0, &row, 0);
-	row -= lines_n;
-	tputs(tgoto(tgetstr("cm", NULL), 0, row), 0, ft_putchar0);
-	tputs(tgetstr("cd", NULL), k->w.ws_row - row, ft_putchar0);
+	int eol1;
+	int offset;
+	int c;
+	int r;
+	int i;
+
+	cursor_position(0, &r, &c);
+	offset = get_offset(k, c);
+	eol1 = k->w.ws_col - offset - 1;
+	goto_cursor(k, 0);
+	tputs(tgetstr("dm", NULL), 0, ft_putchar0);
+	i = 0;
+	while (i <= eol1)
+	{
+		tputs(tgetstr("dc", NULL), 0, ft_putchar0);
+		i++;
+	}
+	//while(move_cursor_left(k))
+	//	tputs(tgetstr("dc", NULL), 0, ft_putchar0);
+	tputs(tgetstr("ed", NULL), 0, ft_putchar0);
+	if (offset + k->l.cursor_max > k->w.ws_col)
+		tputs(tgetstr("cd", NULL), k->w.ws_row - r, ft_putchar0);
+	goto_cursor(k, 0);
 }
 
 int kf_hist_print(t_key *k)
@@ -132,7 +144,6 @@ int kf_hist_print(t_key *k)
 	int	c;
 
 	line_deletion(k);
-	ft_putstr_fd(0, k->prompt);
 	write(0, k->h.hist[k->h.pos], ft_strlen(k->h.hist[k->h.pos]));
 	k->l.reset(&k->l);
 	k->l.write(&k->l, k->h.hist[k->h.pos]);
@@ -191,19 +202,19 @@ int kf_updown(t_key *k)
 
 int kf_del(t_key *k)
 {
-	int cursor;
+	unsigned c;
 
-	if (!k->l.cursor)
+	c = k->l.cursor;
+	if (!c)
 		return (1);
-	tputs(tgetstr("sc", NULL), 0, ft_putchar0);
 	line_deletion(k);
-	ft_putstr_fd(0, k->prompt);
+	k->l.cursor = c;
 	k->l.cursor_delete(&k->l);
-	cursor = k->l.cursor;
 	ft_putstr_fd(0, k->l.str);
-	tputs(tgetstr("rc", NULL), 0, ft_putchar0);
-	k->l.cursor++;
-	move_cursor_left(k);
+	k->l.cursor = k->l.cursor_max;
+	while (k->l.cursor >= c)
+		move_cursor_left(k);
+
 	return (1);
 }
 

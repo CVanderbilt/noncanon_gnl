@@ -1,7 +1,9 @@
 #ifndef MOTION_H
 # define MOTION_H
 
-unsigned short get_col(t_key *k);
+int get_offset(t_key *k, int c);
+void goto_cursor(t_key *k, unsigned int dst);
+unsigned short get_col(void);
 int cursor_position(const int tty, int *const rowptr, int *const colptr);
 int move_cursor_left(t_key *k);
 int move_cursor_right(t_key *k);
