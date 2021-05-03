@@ -51,7 +51,7 @@ t_key				*g_key;
 void line_deletion(t_key *k);
 void set_wdata(struct winsize (*w));
 void set_key_type(t_key *key);
-void get_key(t_key *key);
+int get_key(t_key *key);
 int ft_manage_key(t_key *key);
 int	ft_save(t_key *key, const char *str);
 

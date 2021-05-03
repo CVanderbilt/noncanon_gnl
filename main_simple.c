@@ -83,7 +83,8 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	while(1)
 	{
 		key.type = KT_UNRECOGNIZED;
-		get_key(&key);
+		if (!get_key(&key))
+			break ;
 		if (!ft_manage_key(&key))
 			break ;
 		//ft_refresh(key.line);

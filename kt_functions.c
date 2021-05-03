@@ -33,12 +33,15 @@ void set_key_type(t_key *key)
 		key->type = KT_UNRECOGNIZED;
 }
 
-void get_key(t_key *key)
+int get_key(t_key *key)
 {
 	read(0, key->key, 1);
+	if (key->key[0] == 4 && !key->l.cursor_max)
+		return (0);
 	if (key->key[0] == '\x1b')
 		read(0, key->key + 1, 3);
 	set_key_type(key);
+	return (1);
 }
 
 int kf_unrec(t_key *k)

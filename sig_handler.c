@@ -25,6 +25,8 @@ int sig_init(void)
   		return (0);
 	if (signal(SIGWINCH, handler) == SIG_ERR)
 		return (0);	
+	if (signal(SIGQUIT, handler) == SIG_ERR)
+  		return (0);
 	return (1);
 }
 
