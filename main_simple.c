@@ -17,14 +17,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-void ft_fatal(const char *str, const char *str2)
-{
-	if (str) printf("%s", str);
-	if (str2) printf("%s", str2);
-	exit(1);
-}
-
-void set_term_basic(void)
+void	set_term_basic(void)
 {
 	struct termios	tattr;
 
@@ -34,40 +27,47 @@ void set_term_basic(void)
 	tcsetattr(STDIN_FILENO, TCSADRAIN, &tattr);
 }
 
-void set_term_specific(void)
+void	set_term_specific(void)
 {
-	struct termios tty;
+	struct termios	tty;
+	char			*termtype;
 
-	if(tcgetattr(STDIN_FILENO, &tty) != 0)
-    	printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
-	tty.c_lflag &= ~ICANON; /* Canonical mode disabled */
-	tty.c_lflag &= ~ECHO;	/* Disable echo */
-	tty.c_oflag &= ~OPOST; /* Prevent special interpretation of output bytes (e.g. newline chars) */
+	if (tcgetattr(STDIN_FILENO, &tty) != 0)
+		printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+	tty.c_lflag &= ~ICANON;
+	tty.c_lflag &= ~ECHO;
+	tty.c_oflag &= ~OPOST;
 	tty.c_cc[VMIN] = 1;
 	tty.c_cc[VTIME] = 0;
 	if (tcsetattr(STDIN_FILENO, TCSADRAIN, &tty) != 0)
-    	printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
-
-	char *termtype = getenv ("TERM");
-
+		printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
+	termtype = getenv ("TERM");
 	if (termtype == 0)
 		ft_fatal("Specify a terminal type with `setenv TERM <yourtype>'.\n", 0);
-
-	tgetent(NULL, termtype); //importante al parecer, >>>AVERIGUAR<<<
+	tgetent(NULL, termtype);
 }
 
-//int tgetnum (char *name);
-//int tgetflag (char *name);
-//char *tgetstr (char *name, char **area);
-
-void ft_putchar(char c)
+void	ft_putchar(char c)
 {
 	write(0, &c, 1);
 }
 
-int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *))
+int	line_edition_loop_end(t_key *key)
 {
-	t_key key;
+	int	i;
+
+	i = -1;
+	while (++i < 5)
+		free (key->h.hist[i]);
+	free (key->l.str);
+	set_term_basic();
+	return (0);
+}
+
+int	line_edition_loop(
+	void *data, const char *prompt, int (*hook)(void *, char *))
+{
+	t_key	key;
 
 	set_term_specific();
 	sig_init();
@@ -80,22 +80,13 @@ int line_edition_loop(void *data, const char *prompt, int (*hook)(void *, char *
 	key.prompt_len = ft_strlen(prompt);
 	write(0, key.prompt, key.prompt_len);
 	key.hook = hook;
-	while(1)
+	while (1)
 	{
 		key.type = KT_UNRECOGNIZED;
 		if (!get_key(&key))
 			break ;
 		if (!ft_manage_key(&key))
 			break ;
-		//ft_refresh(key.line);
 	}
-	for (int i = 0; i < 5; i++)
-		free(key.h.hist[i]);
-	write(0, "\nexiting...\n", 12);
-	write(0, "last line: ", 11);
-	ft_putstr_fd(0, key.l.str);
-	free (key.l.str);
-	write(0, "\n", 1);
-	set_term_basic();
-	return (0);
+	return (line_edition_loop_end(&key));
 }

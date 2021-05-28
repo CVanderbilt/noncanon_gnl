@@ -1,6 +1,6 @@
 #ifndef UTILS_H
 # define UTILS_H
-# include "ultimate_libft/ultra_utils.h"
+# include "ultra_utils.h"
 # include "sig_handler.h"
 # include "kt_functions.h"
 # include "line_edition.h"
