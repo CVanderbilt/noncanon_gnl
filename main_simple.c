@@ -42,8 +42,7 @@ void	set_term_specific(void)
 	if (tcsetattr(STDIN_FILENO, TCSADRAIN, &tty) != 0)
 		printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
 	termtype = getenv ("TERM");
-	if (termtype == 0)
-		ft_fatal("Specify a terminal type with `setenv TERM <yourtype>'.\n", 0);
+//	if (termtype == 0) creo que salta esto cuando stdin es un file
 	tgetent(NULL, termtype);
 }
 
