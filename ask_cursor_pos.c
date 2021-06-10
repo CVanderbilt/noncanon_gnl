@@ -5,12 +5,12 @@
 #include "utils.h"
 #include <stdio.h>
 
-char *read_until_c(int fd, char e)
+char	*read_until_c(int fd, char e)
 {
-	char *ret;
-	char *aux;
-	char buff[2];
-	int rb;
+	char	*ret;
+	char	*aux;
+	char	buff[2];
+	int		rb;
 
 	buff[1] = 0;
 	ret = ft_strdup("");
@@ -31,21 +31,19 @@ char *read_until_c(int fd, char e)
 			break ;
 		else
 		{
-			free (ret);
-			return (0);
+			return (ft_free(ret));
 		}
 	}
 	return (ret);
 }
 
-int cursor_position(const int tty, int *const rowptr, int *const colptr)
+int	cursor_position(const int tty, int *const rowptr, int *const colptr)
 {
-	char *response;
-	int i;
-	int r;
-	int c;
+	char	*response;
+	int		i;
+	int		r;
+	int		c;
 
-	//ft_putstr_fd(tty, "\033[6n");
 	r = -1;
 	c = -1;
 	write(tty, "\033[6n", 4);
