@@ -9,9 +9,8 @@
 # include <unistd.h>
 # include <term.h>
 
-
-int ft_putchar0(int c);
-void new_line_reset(t_key *k);
-void write_prompt(t_key *k);
+int		ft_putchar0(int c);
+void	new_line_reset(t_key *k);
+void	write_prompt(t_key *k);
 
 #endif
