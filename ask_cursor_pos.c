@@ -5,72 +5,82 @@
 #include "utils.h"
 #include <stdio.h>
 
-char *read_until_c(int fd, char e)
+typedef struct s_ruc
 {
-	char *ret;
-	char *aux;
-	char buff[2];
-	int rb;
+	char	*ret;
+	char	*aux;
+	char	buff[2];
+	int		rb;
+}	t_ruc;
 
-	buff[1] = 0;
-	ret = ft_strdup("");
+char	*read_until_c(int fd, char e)
+{
+	t_ruc	r;
+
+	r.buff[1] = 0;
+	r.ret = ft_strdup("");
 	while (1)
 	{
-		rb = read (fd, buff, 1);
-		if (rb > 0)
+		r.rb = read (fd, r.buff, 1);
+		if (r.rb > 0)
 		{
-			aux = ft_strjoin(ret, buff, 0);
-			free (ret);
-			if (!aux)
+			r.aux = ft_strjoin(r.ret, r.buff, 0);
+			free (r.ret);
+			if (!r.aux)
 				return (0);
-			ret = aux;
-			if (buff[0] == e)
+			r.ret = r.aux;
+			if (r.buff[0] == e)
 				break ;
 		}
-		else if (!rb)
+		else if (!r.rb)
 			break ;
 		else
-		{
-			free (ret);
-			return (0);
-		}
+			return (ft_free(r.ret));
 	}
-	return (ret);
+	return (r.ret);
 }
 
-int cursor_position(const int tty, int *const rowptr, int *const colptr)
+typedef struct s_cp
 {
-	char *response;
-	int i;
-	int r;
-	int c;
+	char	*response;
+	int		i;
+	int		r;
+	int		c;
+}	t_cp;
 
-	//ft_putstr_fd(tty, "\033[6n");
-	r = -1;
-	c = -1;
+void	cursor_position_loop(t_cp *c, int *const rowptr, int *const colptr)
+{
+	if (ft_strlen(c->response) < 6)
+		return ;
+	if (c->response[0] != 27 || c->response[1] != '[')
+		return ;
+	c->i = 2;
+	c->r = ft_atoi(c->response + c->i);
+	while (ft_is_digit(c->response[c->i]))
+		c->i++;
+	if (c->response[c->i] != ';')
+		return ;
+	c->c = ft_atoi(c->response + ++c->i);
+	if (rowptr)
+		*rowptr = c->r - 1;
+	if (colptr)
+		*colptr = c->c - 1;
+}
+
+int	cursor_position(const int tty, int *const rowptr, int *const colptr)
+{
+	t_cp	c;
+
+	c.r = -1;
+	c.c = -1;
 	write(tty, "\033[6n", 4);
-	response = read_until_c(tty, 'R');
+	c.response = read_until_c(tty, 'R');
 	while (1)
 	{
-		if (ft_strlen(response) < 6)
-			break ;
-		if (response[0] != 27 || response[1] != '[')
-			break ;
-		i = 2;
-		r = ft_atoi(response + i);
-		while (ft_is_digit(response[i]))
-			i++;
-		if (response[i] != ';')
-			break ;
-		c = ft_atoi(response + ++i);
-		if (rowptr)
-			*rowptr = r - 1;
-		if (colptr)
-			*colptr = c - 1;
+		cursor_position_loop(&c, rowptr, colptr);
 		break ;
 	}
-	free (response);
-	if (c < 0)
-		return (0);
-	return (1);
+	if (c.c < 0)
+		return ((int)ft_free(c.response));
+	return (1 + (int)ft_free(c.response));
 }

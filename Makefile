@@ -22,11 +22,13 @@ LDFLAGS=-L.
 
 LDLIBS=-lft
 
-HDDIRS=-I includes/
+HDDIRS=-I ../../includes/
 
 
 
-SRC=kt_functions.c line_edition.c main_simple.c utils.c sig_handler.c motion.c ask_cursor_pos.c
+SRC=kt_functions.c line_edition1.c line_edition2.c main_simple.c \
+utils.c sig_handler.c motion.c ask_cursor_pos.c motion2.c\
+kt_history.c kt_eol.c kt_del.c kt_print.c kt_move_unrec.c
 
 OBJ=$(SRC:.c=.o)
 
