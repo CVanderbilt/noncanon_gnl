@@ -3,28 +3,28 @@
 # define PROMPT "prompt"
 # define PROMPT_SIZE 6
 
-typedef struct	s_line
+typedef struct s_line
 {
-	unsigned int 	cursor;
+	unsigned int	cursor;
 	unsigned int	cursor_max;
 	char			*str;
 	int				(*cursor_advance)(struct s_line*);
 	int				(*cursor_back)(struct s_line*);
 	int				(*cursor_delete)(struct s_line*);
-	struct s_line 	*(*write)(struct s_line*, char *);
-	struct s_line	*(*reset)(struct s_line*);
+	struct	s_line	*(*write)(struct s_line*, char *);
+	struct	s_line	*(*reset)(struct s_line*);
 	unsigned int	err;
-}					t_line;
+}	t_line;
 
-typedef struct	s_history
+typedef struct s_history
 {
-	char			*hist[5];
-	int				i;
-	int				pos;
-	int				last;
-	int				limit_up;
-	int				limit_down;
-}					t_history;
+	char	*hist[5];
+	int		i;
+	int		pos;
+	int		last;
+	int		limit_up;
+	int		limit_down;
+}	t_history;
 
 int			line_edition_loop(
 				void *p, const char *str, int (*hook)(void *p, char *s));
