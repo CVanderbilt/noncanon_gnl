@@ -70,7 +70,7 @@ int	line_edition_loop(
 
 	set_term_specific();
 	sig_init();
-	set_wdata(&key.w);
+	set_wdata(&key);
 	g_key = &key;
 	key.h = new_history();
 	key.l = new_line();

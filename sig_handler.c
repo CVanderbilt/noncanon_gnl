@@ -12,7 +12,7 @@ void	handler(int signo)
 		write_prompt(g_key);
 	}
 	else if (signo == SIGWINCH)
-		set_wdata(&g_key->w);
+		set_wdata(g_key);
 }
 
 int	sig_init(void)
@@ -26,7 +26,7 @@ int	sig_init(void)
 	return (1);
 }
 
-void	set_wdata(struct winsize (*w))
+void	set_wdata(t_key *k)
 {	
-	ioctl(STDIN_FILENO, TIOCGWINSZ, w);
+	ioctl(STDIN_FILENO, TIOCGWINSZ, &(k->w));
 }
