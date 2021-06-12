@@ -1,5 +1,6 @@
 #ifndef MOTION_H
 # define MOTION_H
+# include "kt_functions.h"
 
 int				get_offset(t_key *k, int c);
 void			goto_cursor(t_key *k, unsigned int dst);
