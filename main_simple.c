@@ -42,7 +42,8 @@ void	set_term_specific(void)
 	if (tcsetattr(STDIN_FILENO, TCSADRAIN, &tty) != 0)
 		printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
 	termtype = getenv ("TERM");
-//	if (termtype == 0) creo que salta esto cuando stdin es un file
+	if (termtype == 0)
+		write(1, "implementar que funcione con un gnl normal!!\n", 45);
 	tgetent(NULL, termtype);
 }
 
