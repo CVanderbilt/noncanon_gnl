@@ -41,7 +41,8 @@ void	line_deletion(t_key *k)
 	int	r;
 	int	i;
 
-	cursor_position(0, &r, &c);
+	if (!cursor_position(0, &r, &c))
+		return ;
 	offset = get_offset(k, c);
 	eol1 = k->w.ws_col - offset - 1;
 	goto_cursor(k, 0);
@@ -55,7 +56,6 @@ void	line_deletion(t_key *k)
 	tputs(tgetstr("ed", NULL), 0, ft_putchar0);
 	if (offset + k->l.cursor_max > k->w.ws_col)
 		tputs(tgetstr("cd", NULL), k->w.ws_row - r, ft_putchar0);
-	goto_cursor(k, 0);
 }
 
 int	ft_save(t_key *key, const char *str)

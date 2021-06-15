@@ -5,6 +5,7 @@
 int				get_offset(t_key *k, int c);
 void			goto_cursor(t_key *k, unsigned int dst);
 unsigned short	get_col(void);
+unsigned short	get_row(void);
 int				cursor_position(
 					const int tty, int *const rowptr, int *const colptr);
 int				move_cursor_left(t_key *k);

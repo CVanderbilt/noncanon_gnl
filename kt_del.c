@@ -9,7 +9,7 @@ int	kf_del(t_key *k)
 	c = k->l.cursor;
 	if (!c)
 		return (1);
-	line_deletion(k);
+	line_deletion(k); //broken
 	k->l.cursor = c;
 	k->l.cursor_delete(&k->l);
 	ft_putstr_fd(0, k->l.str);

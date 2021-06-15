@@ -38,6 +38,13 @@ int		ft_is_digit(char c);
 *			Frees
 */
 void	*ft_free(void *ptr);
-void	*ft_dummy(int n);
 void	*ft_close(int fd);
+void	*ft_dummy(int n);
+
+/*
+*			Log
+*/
+int		ft_log(const char *file, const char *str);
+int		ft_logn(const char *file, const char *str);
+
 #endif
