@@ -2,6 +2,27 @@
 #include "utils.h"
 #include "motion.h"
 
+/*
+*	This function is used to write strings on the minishell console,
+*	it prevents the bug where the cursor wont wrap when writing until
+*	the last column, this function checks if this bug is going to happen
+*	and fixes it by moving the cursor to the correct position.
+*/
+void	ms_put_str(t_key *k, const char *str)
+{
+	unsigned int	col;
+	unsigned int	len;
+
+	col = get_col();
+	len = ft_strlen(str);
+	ft_putstr_fd(0, str);
+	if (col + len == k->w.ws_col)
+	{
+		tputs(tgetstr("do", 0), 1, ft_putchar0);
+		tputs(tgetstr("cr", 0), 1, ft_putchar0);
+	}
+}
+
 void	set_key_type(t_key *key)
 {
 	if (ISPRINTABLE(key->key[0]))

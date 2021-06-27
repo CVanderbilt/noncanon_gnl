@@ -5,7 +5,7 @@ int	kf_hist_print(t_key *k)
 	int	c;
 
 	line_deletion(k);
-	write(0, k->h.hist[k->h.pos], ft_strlen(k->h.hist[k->h.pos]));
+	ms_put_str(k, k->h.hist[k->h.pos]);
 	k->l.reset(&k->l);
 	k->l.write(&k->l, k->h.hist[k->h.pos]);
 	c = k->l.cursor_advance(&k->l);

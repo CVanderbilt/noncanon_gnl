@@ -44,7 +44,7 @@ void	*ft_dummy(int n);
 /*
 *			Log
 */
-int		ft_log(const char *file, const char *str);
-int		ft_logn(const char *file, const char *str);
+int		ft_log(const char *str);
+int		ft_logn(const char *str);
 
 #endif
