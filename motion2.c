@@ -31,6 +31,14 @@ unsigned short	get_col(void)
 	return ((unsigned)col);
 }
 
+unsigned short	get_row(void)
+{
+	int	row;
+
+	cursor_position(0, &row, 0);
+	return ((unsigned)row);
+}
+
 int	move_cursor_left(t_key *k)
 {
 	unsigned short	col;

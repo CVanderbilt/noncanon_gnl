@@ -60,6 +60,7 @@ t_key	*g_key;
 /*
 *	kf_functions.h
 */
+void	ms_put_str(t_key *k, const char *str);
 void	line_deletion(t_key *k);
 //void	set_wdata(struct winsize (t_key *k));
 void	set_wdata(t_key *k);
