@@ -19,15 +19,20 @@ int	kf_print(t_key *k)
 	write(0, buff, 1);
 	ft_putstr_fd(0, save);
 	tputs(tgetstr("rc", NULL), 0, &ft_putchar0);
-	int sobran = ft_strlen(save);
-	sobran -= k->w.ws_col - col;
-	if (sobran < 0)
-		sobran = 0;
-	sobran = (row + (sobran + k->w.ws_col - 1) / k->w.ws_col) + 1;
-	if (!((col + ft_strlen(save)) % k->w.ws_col)
-		&& k->l.cursor < k->l.cursor_max
-		&& sobran >= k->w.ws_row)
-		tputs(tgetstr("up", 0), 1, ft_putchar0);
+
+	unsigned int resto;
+
+	resto = k->w.ws_col - col;
+	if (resto <= ft_strlen(save))
+	{
+		int sobran;
+
+		sobran = k->w.ws_row - row + (ft_strlen(save) - resto) % k->w.ws_col;
+		if (sobran <= 0)
+			tputs(tgetstr("up", NULL), 0, &ft_putchar0);
+	}
+
+	
 	free (save);
 	k->l.write(&k->l, buff);
 	move_cursor_right(k);
