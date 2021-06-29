@@ -78,6 +78,8 @@ int	line_edition_loop(
 	key.data = data;
 	key.prompt = prompt;
 	key.prompt_len = ft_strlen(prompt);
+	key.prompt="_mlx>";
+	key.prompt_len = 5;
 	key.type = KT_UNRECOGNIZED;
 	write(0, key.prompt, key.prompt_len);
 	key.hook = hook;
@@ -85,6 +87,8 @@ int	line_edition_loop(
 	{
 		key.l.last_key = key.type;
 		key.type = KT_UNRECOGNIZED;
+		if (key.l.last_key != KT_UNRECOGNIZED && key.l.last_key != KT_EOL)
+			key.l.last_offset = get_offset(&key, get_col());
 		if (!get_key(&key))
 			break ;
 		if (!ft_manage_key(&key))

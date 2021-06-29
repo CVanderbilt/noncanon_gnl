@@ -17,7 +17,10 @@ int	kf_print(t_key *k)
 	buff[1] = 0;
 	buff[0] = k->key[0];
 	write(0, buff, 1);
-	ft_putstr_fd(0, save);
+	//ft_putstr_fd(0, save);
+	//getchar();
+	ft_putstrn_fd(0, save, k->w.ws_col * k->w.ws_row - k->w.ws_col * (row) + col);
+	//getchar();
 	tputs(tgetstr("rc", NULL), 0, &ft_putchar0);
 
 	unsigned int resto;

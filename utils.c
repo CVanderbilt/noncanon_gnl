@@ -18,3 +18,18 @@ void	write_prompt(t_key *k)
 {
 	write(2, k->prompt, k->prompt_len);
 }
+
+int	ft_putstrn_fd(int fd, const char *str, int n)
+{
+	int	i;
+
+	i = 0;
+	ft_log("max chars:"); ft_logn(ft_itoa(n));
+	while (str[i] && i < n)
+	{
+		ft_log("escribe un char: "); ft_logn(ft_itoa(i));
+		write(fd, str + i, 1);
+		i++;
+	}
+	return (i);
+}

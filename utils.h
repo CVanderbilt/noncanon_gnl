@@ -12,5 +12,6 @@
 int		ft_putchar0(int c);
 void	new_line_reset(t_key *k);
 void	write_prompt(t_key *k);
+int		ft_putstrn_fd(int fd, const char *str, int n);
 
 #endif
