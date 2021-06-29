@@ -16,7 +16,7 @@ void	ms_put_str(t_key *k, const char *str)
 	col = get_col();
 	len = ft_strlen(str);
 	ft_putstr_fd(0, str);
-	if (col + len == k->w.ws_col)
+	if (!((col + len) % k->w.ws_col))
 	{
 		tputs(tgetstr("do", 0), 1, ft_putchar0);
 		tputs(tgetstr("cr", 0), 1, ft_putchar0);
@@ -64,7 +64,9 @@ void	line_deletion(t_key *k)
 
 	if (!cursor_position(0, &r, &c))
 		return ;
-	offset = get_offset(k, c);
+	offset = k->l.last_offset;
+	if (k->l.last_key == KT_UNRECOGNIZED || k->l.last_key == KT_EOL)
+		offset = get_offset(k, c);
 	eol1 = k->w.ws_col - offset - 1;
 	goto_cursor(k, 0);
 	tputs(tgetstr("dm", NULL), 0, ft_putchar0);
@@ -100,5 +102,6 @@ int	ft_manage_key(t_key *key)
 	functptr[6] = kf_move;
 	functptr[7] = kf_del;
 	functptr[8] = kf_eol;
-	return (functptr[key->type](key));
+	int ret = functptr[key->type](key);
+	return (ret);
 }

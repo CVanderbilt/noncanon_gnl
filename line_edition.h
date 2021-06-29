@@ -2,6 +2,7 @@
 # define LINE_EDITION_H
 # define PROMPT "prompt"
 # define PROMPT_SIZE 6
+# include "types.h"
 
 typedef struct s_line
 {
@@ -14,6 +15,8 @@ typedef struct s_line
 	struct	s_line	*(*write)(struct s_line*, char *);
 	struct	s_line	*(*reset)(struct s_line*);
 	unsigned int	err;
+	t_key_type		last_key;
+	int				last_offset;
 }	t_line;
 
 typedef struct s_history

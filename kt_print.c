@@ -21,9 +21,9 @@ int	kf_print(t_key *k)
 	tputs(tgetstr("rc", NULL), 0, &ft_putchar0);
 
 	unsigned int resto;
-
+	
 	resto = k->w.ws_col - col;
-	if (resto <= ft_strlen(save))
+	if (resto < ft_strlen(save)) //antes era <= revisar la diferencia
 	{
 		int sobran;
 
@@ -32,7 +32,7 @@ int	kf_print(t_key *k)
 			tputs(tgetstr("up", NULL), 0, &ft_putchar0);
 	}
 
-	
+
 	free (save);
 	k->l.write(&k->l, buff);
 	move_cursor_right(k);
