@@ -78,10 +78,12 @@ int	line_edition_loop(
 	key.data = data;
 	key.prompt = prompt;
 	key.prompt_len = ft_strlen(prompt);
+	key.type = KT_UNRECOGNIZED;
 	write(0, key.prompt, key.prompt_len);
 	key.hook = hook;
 	while (1)
 	{
+		key.l.last_key = key.type;
 		key.type = KT_UNRECOGNIZED;
 		if (!get_key(&key))
 			break ;

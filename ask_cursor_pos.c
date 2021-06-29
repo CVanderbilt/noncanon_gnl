@@ -4,6 +4,7 @@
 #include <errno.h>
 #include "utils.h"
 #include <stdio.h>
+#include "kt_functions.h"
 
 typedef struct s_ruc
 {
@@ -67,7 +68,8 @@ void	cursor_position_loop(t_cp *c, int *const rowptr, int *const colptr)
 		*colptr = c->c - 1;
 }
 
-int	cursor_position(const int tty, int *const rowptr, int *const colptr)
+int	cursor_position(
+	const int tty, int *const rowptr, int *const colptr)
 {
 	t_cp	c;
 
