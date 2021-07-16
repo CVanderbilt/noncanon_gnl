@@ -27,13 +27,14 @@ void	set_term_basic(void)
 	tcsetattr(STDIN_FILENO, TCSADRAIN, &tattr);
 }
 
-void	set_term_specific(void)
+int		set_term_specific(void)
 {
 	struct termios	tty;
 	char			*termtype;
 
 	if (tcgetattr(STDIN_FILENO, &tty) != 0)
-		printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+		return (0);
+		//printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
 	tty.c_lflag &= ~ICANON;
 	tty.c_lflag &= ~ECHO;
 	tty.c_oflag &= ~OPOST;
@@ -43,8 +44,10 @@ void	set_term_specific(void)
 		printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
 	termtype = getenv ("TERM");
 	if (termtype == 0)
-		write(1, "implementar que funcione con un gnl normal!!\n", 45);
+		return (0);
+		//write(1, "implementar que funcione con un gnl normal!!\n", 45);
 	tgetent(NULL, termtype);
+	return (1);
 }
 
 void	ft_putchar(char c)
@@ -64,12 +67,24 @@ int	line_edition_loop_end(t_key *key)
 	return (0);
 }
 
+int	alt_loop(void *data, int (*hook)(void *, char *))
+{
+	ft_putstr("alt loop");
+	exit (0);
+	free (data);
+	return (hook(0, 0));
+}
+
 int	line_edition_loop(
 	void *data, const char *prompt, int (*hook)(void *, char *))
 {
 	t_key	key;
 
-	set_term_specific();
+	if (!set_term_specific())
+	{
+		//exit (0);
+		return (alt_loop(data, hook));
+	}
 	sig_init();
 	set_wdata(&key);
 	g_key = &key;

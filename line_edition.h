@@ -35,7 +35,7 @@ int			line_edition_loop(
 *	public
 */
 void		set_term_basic(void);
-void		set_term_specific(void);
+int			set_term_specific(void);
 int			line_advance_cursor(t_line *l);
 int			line_back_cursor(t_line *l);
 int			line_delete_cursor(t_line *l);
