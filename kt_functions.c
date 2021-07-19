@@ -71,11 +71,6 @@ void	line_deletion(t_key *k)
 	goto_cursor(k, 0);
 	tputs(tgetstr("dm", NULL), 0, ft_putchar0);
 	i = 0;
-	while (i <= eol1)
-	{
-		tputs(tgetstr("dc", NULL), 0, ft_putchar0);
-		i++;
-	}
 	tputs(tgetstr("ed", NULL), 0, ft_putchar0);
 	if (offset + k->l.cursor_max > k->w.ws_col)
 		tputs(tgetstr("cd", NULL), k->w.ws_row - r, ft_putchar0);

@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "ultra_utils.h"
 
 void	set_term_basic(void)
 {
@@ -69,10 +70,21 @@ int	line_edition_loop_end(t_key *key)
 
 int	alt_loop(void *data, int (*hook)(void *, char *))
 {
-	ft_putstr("alt loop");
-	exit (0);
-	free (data);
-	return (hook(0, 0));
+	char	*line;
+	int		control;
+	int		eof;
+
+	control = 1;
+	while (1)
+	{
+		eof = get_next_line(&line);
+		if (eof < 0) // error
+			break ;
+		control = hook(data, line);
+		if (control == 0 || eof == 0)
+			return (1);
+	}
+	return (0);
 }
 
 int	line_edition_loop(
@@ -81,10 +93,7 @@ int	line_edition_loop(
 	t_key	key;
 
 	if (!set_term_specific())
-	{
-		//exit (0);
 		return (alt_loop(data, hook));
-	}
 	sig_init();
 	set_wdata(&key);
 	g_key = &key;
