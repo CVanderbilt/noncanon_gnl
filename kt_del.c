@@ -14,7 +14,6 @@ int	kf_del(t_key *k)
 	k->l.cursor = c;
 	k->l.cursor_delete(&k->l);
 	ft_putstr_fd(0, k->l.str);
-	k->l.cursor = k->l.cursor_max;
 	tputs(tgetstr("rc", NULL), 0, &ft_putchar0);
 	k->l.cursor = c;
 	move_cursor_left(k);

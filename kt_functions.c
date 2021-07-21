@@ -62,6 +62,7 @@ void	line_deletion(t_key *k)
 	int	r;
 	int	i;
 
+	i = -1;
 	if (!cursor_position(0, &r, &c))
 		return ;
 	offset = k->l.last_offset;
@@ -69,11 +70,10 @@ void	line_deletion(t_key *k)
 		offset = get_offset(k, c);
 	eol1 = k->w.ws_col - offset - 1;
 	goto_cursor(k, 0);
-	tputs(tgetstr("dm", NULL), 0, ft_putchar0);
-	i = 0;
-	tputs(tgetstr("ed", NULL), 0, ft_putchar0);
-	if (offset + k->l.cursor_max > k->w.ws_col)
-		tputs(tgetstr("cd", NULL), k->w.ws_row - r, ft_putchar0);
+	cursor_position(0, &r, &c);
+	while (++i < (int)k->l.cursor_max)
+		write(0, " ", 1);
+	tputs(tgoto(tgetstr("cm", NULL), c, r), 0, ft_putchar0);
 }
 
 int	ft_save(t_key *key, const char *str)
