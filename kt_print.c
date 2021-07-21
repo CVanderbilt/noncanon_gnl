@@ -23,12 +23,10 @@ int	kf_print(t_key *k)
 	unsigned int resto;
 	
 	resto = k->w.ws_col - col;
-	if (resto < ft_strlen(save)) //antes era <= revisar la diferencia
+	if (resto <= ft_strlen(save))
 	{
-		int sobran;
-
-		sobran = k->w.ws_row - row + (ft_strlen(save) - resto) % k->w.ws_col;
-		if (sobran <= 0)
+		col += ft_strlen(save) + 1;
+		if (row + col / k->w.ws_col >= k->w.ws_row && col % k->w.ws_col == 1)
 			tputs(tgetstr("up", NULL), 0, &ft_putchar0);
 	}
 
